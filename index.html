@@ -1,0 +1,1150 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#102a43">
+<title>BCH 208 Clinical Carbohydrate Metabolism</title>
+
+<style>
+:root {
+  --navy:#102a43;
+  --blue:#2274ff;
+  --light:#eef5fb;
+  --green:#16803c;
+  --red:#c62828;
+  --border:#d9e2ec;
+  --text:#172b4d;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  padding:12px;
+  background:#f2f5f9;
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+.container {max-width:850px;margin:auto}
+.header {
+  background:linear-gradient(120deg,#102a43,#1769aa);
+  color:white;padding:20px;border-radius:14px;margin-bottom:14px
+}
+.header h1 {font-size:22px;margin:7px 0}
+.header p {font-size:13px;margin:5px 0}
+.card {
+  background:white;border:1px solid var(--border);
+  border-radius:13px;padding:16px;margin-bottom:14px;
+  box-shadow:0 2px 8px #102a430c
+}
+h2 {font-size:16px;margin:0 0 12px}
+.small {font-size:12px;color:#62748a}
+.navgrid {
+  display:grid;grid-template-columns:repeat(10,minmax(0,1fr));
+  gap:6px
+}
+.nav {
+  min-height:36px;border:1px solid #cbd5e1;
+  background:#f8fafc;border-radius:7px;
+  font-weight:bold;color:#425466;cursor:pointer
+}
+.nav.answered {background:#dceeff;border-color:#5b9bd5;color:#124d7a}
+.nav.current {outline:3px solid #e6ae22;background:#fff4cc}
+.progressrow {
+  display:flex;justify-content:space-between;
+  font-size:13px;font-weight:bold;gap:10px
+}
+.track {height:9px;background:#e7edf4;border-radius:20px;overflow:hidden;margin:9px 0}
+.fill {height:100%;background:var(--blue);width:0%;transition:.2s}
+.topic {font-size:11px;color:#62748a;font-weight:bold;margin:15px 0 5px}
+.question {font-size:17px;font-weight:bold;line-height:1.55;margin:8px 0 16px}
+.option {
+  display:flex;gap:10px;align-items:flex-start;
+  border:1.5px solid var(--border);border-radius:10px;
+  padding:13px;margin:9px 0;cursor:pointer;
+  background:white;min-height:48px;line-height:1.45
+}
+.option.selected {border-color:var(--blue);background:#eef5ff}
+.option.correct {border-color:var(--green);background:#e7f6ec}
+.option.wrong {border-color:var(--red);background:#ffeded}
+.letter {font-weight:bold;color:#1769aa;min-width:22px}
+.optiontext {flex:1}
+.tag {font-size:10px;font-weight:bold;white-space:nowrap}
+.controls {display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+button {cursor:pointer}
+.action {
+  padding:12px 16px;border:0;border-radius:8px;
+  font-weight:bold;font-size:14px
+}
+.secondary {background:#e8eef5;color:#243b53}
+.primary {background:#1769aa;color:white}
+.submit {background:#16803c;color:white;width:100%;margin-top:13px}
+.retake {background:#1769aa;color:white;width:100%;margin-top:15px}
+button:disabled {opacity:.4;cursor:not-allowed}
+.hidden {display:none!important}
+.metrics {display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.metric {background:#f0f4f8;padding:13px;border-radius:9px}
+.metric strong {display:block;font-size:23px;color:#102a43}
+.metric span {font-size:11px;color:#62748a;font-weight:bold}
+.remark {background:#edf5fc;border-left:4px solid #1769aa;padding:13px;margin-top:12px;border-radius:7px}
+.correction {border-top:1px solid var(--border);padding:16px 0}
+.correction h3 {font-size:15px;margin:0 0 8px}
+.correction p {font-size:14px;line-height:1.55}
+.status {font-weight:bold;font-size:13px}
+.good {color:var(--green)}
+.bad {color:var(--red)}
+.na {color:#667085}
+.legend {font-size:11px;color:#62748a;display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.dot {display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px}
+@media(max-width:520px) {
+  .navgrid {grid-template-columns:repeat(5,minmax(0,1fr))}
+  .nav {min-height:39px}
+  body {padding:8px}
+  .card {padding:13px}
+  .question {font-size:16px}
+  .controls button {flex:1}
+  .option {padding:12px}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header class="header">
+  <div><b>BCH 208 | 200L MBBS</b></div>
+  <h1>Clinical Carbohydrate Metabolism</h1>
+  <p>75 Clinical Case-Based MCQs</p>
+  <p>All 15 topics | No timer | Full corrections after submission</p>
+</header>
+
+<section class="card" id="navigationCard">
+  <h2>QUESTION NAVIGATION</h2>
+  <div class="navgrid" id="navGrid"></div>
+  <div class="legend">
+    <span><i class="dot" style="background:#fff4cc"></i>Current</span>
+    <span><i class="dot" style="background:#dceeff"></i>Answered</span>
+    <span><i class="dot" style="background:#f8fafc;border:1px solid #ccc"></i>Unanswered</span>
+  </div>
+</section>
+
+<section class="card" id="quizCard">
+  <div class="progressrow">
+    <span id="progressText"></span>
+    <span id="percentText"></span>
+  </div>
+  <div class="track"><div class="fill" id="progressFill"></div></div>
+
+  <div class="topic" id="topic"></div>
+  <div class="question" id="question"></div>
+  <div id="options"></div>
+
+  <div class="controls">
+    <button class="action secondary" id="prev">← Previous</button>
+    <button class="action primary" id="next">Next →</button>
+  </div>
+
+  <button class="action submit" id="submit">SUBMIT QUIZ</button>
+  <p class="small" id="answeredCount" style="text-align:center"></p>
+</section>
+
+<section class="card hidden" id="results"></section>
+
+<section class="card hidden" id="corrections">
+  <h2>FULL CORRECTIONS</h2>
+  <div id="correctionList"></div>
+</section>
+
+</div>
+
+<script>
+"use strict";
+
+/*
+  ANSWER INDEX:
+  0 = A
+  1 = B
+  2 = C
+  3 = D
+*/
+
+const questions = [
+
+/* ==================================================
+   TOPIC 1: LACTOSE DIGESTION AND GALACTOSE METABOLISM
+================================================== */
+
+{
+topic:"Lactose digestion and galactose metabolism",
+q:"A 3-week-old infant develops jaundice, hepatomegaly, vomiting and poor feeding after breast milk is introduced. Laboratory tests show elevated galactose-1-phosphate. Which enzyme is most likely deficient?",
+o:["Galactokinase","Galactose-1-phosphate uridyltransferase","Aldolase B","Fructokinase"],
+a:1,
+e:"Classic galactosaemia results from deficiency of galactose-1-phosphate uridyltransferase (GALT). Galactose-1-phosphate accumulates and damages the liver, kidneys and nervous system. Galactokinase deficiency usually produces a milder disorder dominated by cataracts."
+},
+
+{
+topic:"Lactose digestion and galactose metabolism",
+q:"An infant develops bilateral cataracts but has no significant liver dysfunction. Blood tests reveal increased galactose. Which enzyme deficiency is the most likely cause?",
+o:["Galactokinase","Lactase","GALT","Glucose-6-phosphatase"],
+a:0,
+e:"Galactokinase deficiency causes accumulation of galactose. Galactose is reduced to galactitol by aldose reductase. Galactitol accumulates in the lens, causing osmotic damage and cataracts."
+},
+
+{
+topic:"Lactose digestion and galactose metabolism",
+q:"A child develops abdominal distension, flatulence and watery diarrhoea after consuming milk. Symptoms disappear when lactose-free milk is given. Which enzyme is deficient?",
+o:["Sucrase","Maltase","Lactase","Pancreatic amylase"],
+a:2,
+e:"Lactase is located on the intestinal brush border and hydrolyses lactose into glucose and galactose. Its deficiency causes lactose malabsorption, osmotic diarrhoea and bacterial fermentation."
+},
+
+{
+topic:"Lactose digestion and galactose metabolism",
+q:"A newborn with classic galactosaemia is placed on a restricted diet. Which dietary substances should be avoided?",
+o:["Glucose and starch","Lactose and galactose","Cellulose and glycogen","Sucrose and maltose only"],
+a:1,
+e:"Lactose is hydrolysed into glucose and galactose. Restricting lactose and galactose reduces the accumulation of toxic galactose metabolites. Milk products are therefore avoided."
+},
+
+{
+topic:"Lactose digestion and galactose metabolism",
+q:"A child with untreated classic galactosaemia develops cataracts. Which metabolite accumulates in the lens and contributes directly to this complication?",
+o:["Galactitol","Lactate","Fructose-1-phosphate","Glucose-6-phosphate"],
+a:0,
+e:"Galactose is reduced to galactitol by aldose reductase. Galactitol accumulates in the lens, causing osmotic swelling and cataract formation."
+},
+
+/* ==================================================
+   TOPIC 2: SUCROSE DIGESTION AND FRUCTOSE METABOLISM
+================================================== */
+
+{
+topic:"Sucrose digestion and fructose metabolism",
+q:"A child develops vomiting, hypoglycaemia and hepatomegaly after eating fruit. Symptoms are particularly severe after fruit juice consumption. Which enzyme is deficient?",
+o:["Fructokinase","Aldolase B","Galactokinase","Lactase"],
+a:1,
+e:"Aldolase B deficiency causes hereditary fructose intolerance. Fructose-1-phosphate accumulates and traps inorganic phosphate, impairing glycogenolysis and gluconeogenesis. Severe hypoglycaemia follows fructose ingestion."
+},
+
+{
+topic:"Sucrose digestion and fructose metabolism",
+q:"A healthy child has persistent fructose in the urine after consuming fruit but remains asymptomatic. Which enzyme deficiency explains this condition?",
+o:["Aldolase B","Fructokinase","Phosphofructokinase-1","Pyruvate kinase"],
+a:1,
+e:"Fructokinase deficiency causes essential fructosuria. Fructose is not efficiently phosphorylated in the liver and is excreted in urine. The condition is generally benign."
+},
+
+{
+topic:"Sucrose digestion and fructose metabolism",
+q:"A patient with hereditary fructose intolerance is advised to avoid certain sweeteners. Which substance can produce fructose after digestion and should therefore be avoided?",
+o:["Glucose","Sucrose","Maltose","Lactose-free glucose solution"],
+a:1,
+e:"Sucrose is hydrolysed by sucrase into glucose and fructose. Fructose exposure can trigger severe hypoglycaemia and liver dysfunction in hereditary fructose intolerance."
+},
+
+{
+topic:"Sucrose digestion and fructose metabolism",
+q:"A patient develops bloating and diarrhoea after consuming sucrose-containing foods. Which intestinal enzyme normally hydrolyses sucrose?",
+o:["Lactase","Sucrase","Pepsin","Trypsin"],
+a:1,
+e:"Sucrase, part of the sucrase-isomaltase complex, hydrolyses sucrose into glucose and fructose at the small-intestinal brush border."
+},
+
+{
+topic:"Sucrose digestion and fructose metabolism",
+q:"A patient with hereditary fructose intolerance develops severe hypoglycaemia after receiving a fructose-containing intravenous preparation. What is the major biochemical mechanism?",
+o:["Increased insulin sensitivity","Fructose-1-phosphate accumulation with phosphate depletion","Excess glycogen synthesis","Increased glucose absorption"],
+a:1,
+e:"Aldolase B deficiency causes fructose-1-phosphate accumulation. This traps phosphate and lowers ATP availability, inhibiting glycogenolysis and gluconeogenesis."
+},
+
+/* ==================================================
+   TOPIC 3: POLYSACCHARIDES AND CELLULOSE
+================================================== */
+
+{
+topic:"Polysaccharides digestion and cellulose",
+q:"A patient asks why eating cellulose does not significantly increase blood glucose in humans. Which explanation is correct?",
+o:["Cellulose contains beta-1,4 glycosidic bonds that humans cannot digest","Cellulose contains alpha-1,4 bonds that are resistant to all enzymes","Cellulose is made entirely of fructose","Cellulose is absorbed intact through the intestine"],
+a:0,
+e:"Cellulose contains beta-1,4 glycosidic bonds. Humans lack cellulase, the enzyme required to hydrolyse these bonds. Cellulose therefore acts as dietary fibre."
+},
+
+{
+topic:"Polysaccharides digestion and cellulose",
+q:"A patient increases dietary fibre intake to improve bowel movements. What is an important physiological effect of cellulose?",
+o:["It is completely converted to glucose in the small intestine","It adds bulk to stool and promotes intestinal movement","It directly stimulates insulin secretion","It is stored as liver glycogen"],
+a:1,
+e:"Cellulose is largely indigestible in humans. It increases stool bulk, retains water and supports normal intestinal motility."
+},
+
+{
+topic:"Polysaccharides digestion and cellulose",
+q:"A laboratory compares starch and cellulose. Which structural feature makes starch digestible by human amylases?",
+o:["Its beta-1,4 bonds","Its alpha-1,4 bonds","Its peptide bonds","Its phosphodiester bonds"],
+a:1,
+e:"Starch contains alpha-1,4 glycosidic bonds in amylose and alpha-1,4 plus alpha-1,6 bonds in amylopectin. Human amylases hydrolyse alpha-1,4 bonds."
+},
+
+{
+topic:"Polysaccharides digestion and cellulose",
+q:"A patient has difficulty digesting a polysaccharide containing numerous alpha-1,6 branch points. Which enzyme activity is needed to remove these branch points?",
+o:["Lactase","Debranching enzyme activity","Pepsin","Glucose-6-phosphatase"],
+a:1,
+e:"The alpha-1,6 bonds at starch branch points are not cleaved by alpha-amylase. Isomaltase activity of the intestinal brush border helps hydrolyse these bonds."
+},
+
+{
+topic:"Polysaccharides digestion and cellulose",
+q:"A patient consumes a meal containing amylose and amylopectin. Which statement correctly describes amylopectin?",
+o:["It is a completely unbranched polymer of beta-glucose","It contains alpha-1,4 chains with alpha-1,6 branch points","It contains only beta-1,4 linkages","It is composed of fructose units"],
+a:1,
+e:"Amylopectin is a branched glucose polymer. Its main chains contain alpha-1,4 bonds and its branch points contain alpha-1,6 bonds."
+},
+
+/* ==================================================
+   TOPIC 4: STARCH DIGESTION AND GLUCOSE ABSORPTION
+================================================== */
+
+{
+topic:"Starch digestion and glucose absorption",
+q:"A patient with pancreatic insufficiency has impaired starch digestion in the small intestine. Which enzyme is primarily responsible for luminal starch digestion?",
+o:["Pancreatic alpha-amylase","Lactase","Pepsin","Sucrase"],
+a:0,
+e:"Pancreatic alpha-amylase hydrolyses internal alpha-1,4 bonds in starch, producing maltose, maltotriose and alpha-limit dextrins."
+},
+
+{
+topic:"Starch digestion and glucose absorption",
+q:"A patient has impaired absorption of glucose and galactose but relatively preserved fructose absorption. Which apical intestinal transporter is most likely defective?",
+o:["GLUT5","SGLT1","GLUT4","GLUT2"],
+a:1,
+e:"SGLT1 transports glucose and galactose into enterocytes by sodium-dependent secondary active transport. GLUT5 is responsible for apical fructose uptake."
+},
+
+{
+topic:"Starch digestion and glucose absorption",
+q:"A researcher studies the movement of absorbed glucose from an intestinal epithelial cell into portal blood. Which transporter is mainly responsible?",
+o:["GLUT4","GLUT5","GLUT2","SGLT1"],
+a:2,
+e:"GLUT2 is located on the basolateral membrane of enterocytes and facilitates movement of absorbed monosaccharides into portal blood."
+},
+
+{
+topic:"Starch digestion and glucose absorption",
+q:"A patient with normal salivary function begins chewing a piece of bread. Which enzyme starts starch digestion in the oral cavity?",
+o:["Salivary alpha-amylase","Pepsin","Trypsin","Maltase"],
+a:0,
+e:"Salivary alpha-amylase begins hydrolysis of alpha-1,4 bonds in starch. Its activity decreases when food enters the acidic stomach."
+},
+
+{
+topic:"Starch digestion and glucose absorption",
+q:"A patient has reduced activity of pancreatic alpha-amylase. Which products of starch digestion will be reduced?",
+o:["Maltose and maltotriose","Amino acids and peptides","Fatty acids and glycerol","Galactose and lactose"],
+a:0,
+e:"Alpha-amylase produces maltose, maltotriose and alpha-limit dextrins from starch. These products are subsequently processed by brush-border enzymes."
+},
+
+/* ==================================================
+   TOPIC 5: TRANSIENT HYPERGLYCAEMIA AND INSULIN RELEASE
+================================================== */
+
+{
+topic:"Transient hyperglycaemia and insulin release",
+q:"A healthy individual develops a temporary rise in blood glucose after a carbohydrate-rich meal. Which pancreatic cells respond by secreting insulin?",
+o:["Alpha cells","Beta cells","Delta cells","PP cells"],
+a:1,
+e:"Pancreatic beta cells detect increased glucose metabolism and release insulin. Insulin promotes glucose uptake and storage and helps return blood glucose towards normal."
+},
+
+{
+topic:"Transient hyperglycaemia and insulin release",
+q:"A laboratory studies insulin secretion from pancreatic beta cells. Increased glucose metabolism raises ATP levels. What happens next?",
+o:["ATP-sensitive potassium channels open","ATP-sensitive potassium channels close","Calcium channels close","The cell becomes hyperpolarised"],
+a:1,
+e:"Increased ATP closes ATP-sensitive potassium channels. Reduced potassium efflux causes membrane depolarisation, opening voltage-gated calcium channels and triggering insulin exocytosis."
+},
+
+{
+topic:"Transient hyperglycaemia and insulin release",
+q:"A patient has a defective glucose-sensing mechanism in pancreatic beta cells. Which enzyme normally plays an important role in glucose sensing?",
+o:["Glucokinase","Lactase","Aldolase B","Glucose-6-phosphatase"],
+a:0,
+e:"Glucokinase phosphorylates glucose in pancreatic beta cells and acts as a glucose sensor. Its activity contributes to the ATP rise that triggers insulin secretion."
+},
+
+{
+topic:"Transient hyperglycaemia and insulin release",
+q:"A healthy person has increased insulin secretion after a mixed meal compared with an equivalent intravenous glucose load. Which intestinal hormones contribute to this effect?",
+o:["Incretins such as GLP-1 and GIP","Thyroxine and cortisol","Glucagon and adrenaline","Aldosterone and renin"],
+a:0,
+e:"GLP-1 and GIP are incretin hormones released from the gut after nutrient ingestion. They enhance glucose-dependent insulin secretion and contribute to the incretin effect."
+},
+
+{
+topic:"Transient hyperglycaemia and insulin release",
+q:"A patient has increased insulin secretion after a meal. Which immediate effect helps reduce postprandial blood glucose?",
+o:["Increased glucose uptake into skeletal muscle and adipose tissue","Increased hepatic glucose output","Increased glycogen breakdown","Inhibition of glucose uptake into muscle"],
+a:0,
+e:"Insulin promotes GLUT4 translocation in skeletal muscle and adipose tissue, increasing glucose uptake. It also promotes glycogenesis and suppresses hepatic glucose production."
+},
+
+/* ==================================================
+   TOPIC 6: GLUCOSE TRANSPORTERS AND UTILIZATION
+================================================== */
+
+{
+topic:"Glucose transporters and glucose utilization",
+q:"A patient with type 1 diabetes has reduced insulin-dependent glucose uptake into skeletal muscle. Which transporter is primarily responsible?",
+o:["GLUT1","GLUT2","GLUT3","GLUT4"],
+a:3,
+e:"GLUT4 is insulin-responsive and is found mainly in skeletal muscle and adipose tissue. Insulin stimulates its translocation to the plasma membrane."
+},
+
+{
+topic:"Glucose transporters and glucose utilization",
+q:"A researcher studies glucose uptake by erythrocytes. Which transporter mediates their basal insulin-independent glucose uptake?",
+o:["GLUT1","GLUT4","GLUT5","SGLT1"],
+a:0,
+e:"GLUT1 mediates basal insulin-independent glucose transport in erythrocytes and several other tissues."
+},
+
+{
+topic:"Glucose transporters and glucose utilization",
+q:"A patient has a defect in the major glucose transporter responsible for glucose uptake into neurons. Which transporter is most relevant?",
+o:["GLUT4","GLUT3","GLUT5","SGLT1"],
+a:1,
+e:"GLUT3 is a high-affinity glucose transporter found prominently in neurons, ensuring glucose uptake even when blood glucose is relatively low."
+},
+
+{
+topic:"Glucose transporters and glucose utilization",
+q:"A patient has impaired hepatic glucose uptake after a meal. Which transporter normally allows glucose to move into and out of hepatocytes?",
+o:["GLUT1","GLUT2","GLUT3","GLUT4"],
+a:1,
+e:"GLUT2 is a high-capacity, bidirectional glucose transporter in hepatocytes. It allows glucose movement according to the concentration gradient."
+},
+
+{
+topic:"Glucose transporters and glucose utilization",
+q:"A child has a defect in fructose absorption across the apical membrane of intestinal enterocytes. Which transporter is most likely affected?",
+o:["GLUT2","GLUT4","GLUT5","GLUT1"],
+a:2,
+e:"GLUT5 is the main apical intestinal fructose transporter. GLUT2 is mainly responsible for basolateral movement of absorbed monosaccharides."
+},
+
+/* ==================================================
+   TOPIC 7: GLYCOLYSIS
+================================================== */
+
+{
+topic:"Glycolysis",
+q:"A patient in septic shock develops lactic acidosis due to tissue hypoxia. Which reaction helps maintain glycolysis under anaerobic conditions?",
+o:["Pyruvate conversion to lactate","Acetyl-CoA conversion to citrate","Glucose conversion to glycogen","Lactate conversion to acetyl-CoA in the cytosol"],
+a:0,
+e:"Lactate dehydrogenase converts pyruvate to lactate while oxidising NADH to NAD+. Regeneration of NAD+ permits glycolysis to continue."
+},
+
+{
+topic:"Glycolysis",
+q:"A patient with an inherited pyruvate kinase deficiency presents with chronic haemolytic anaemia. Why are erythrocytes particularly affected?",
+o:["They depend entirely on glycolysis for ATP","They obtain ATP mainly from mitochondria","They perform extensive fatty acid oxidation","They synthesise glucose through gluconeogenesis"],
+a:0,
+e:"Mature erythrocytes lack mitochondria and depend on glycolysis for ATP. Pyruvate kinase deficiency reduces ATP production and compromises red cell membrane integrity."
+},
+
+{
+topic:"Glycolysis",
+q:"A patient with severe hypoxia has increased anaerobic glycolysis. Which enzyme catalyses the rate-limiting step of glycolysis?",
+o:["Hexokinase","Phosphofructokinase-1","Enolase","Pyruvate kinase"],
+a:1,
+e:"Phosphofructokinase-1 converts fructose-6-phosphate to fructose-1,6-bisphosphate. It is the major rate-limiting and regulatory enzyme of glycolysis."
+},
+
+{
+topic:"Glycolysis",
+q:"A patient with a genetic deficiency of phosphofructokinase develops exercise intolerance and muscle cramps. Which metabolic disorder is most likely?",
+o:["Von Gierke disease","McArdle disease","Tarui disease","Pompe disease"],
+a:2,
+e:"Tarui disease (glycogen storage disease type VII) is caused by muscle phosphofructokinase deficiency. It impairs glycolysis and causes exercise intolerance and muscle cramps."
+},
+
+{
+topic:"Glycolysis",
+q:"A laboratory measures ATP production during anaerobic glycolysis from one molecule of glucose to two molecules of lactate. What is the net ATP yield?",
+o:["1 ATP","2 ATP","4 ATP","8 ATP"],
+a:1,
+e:"Glycolysis produces four ATP but consumes two ATP during its preparatory phase. The net gain is two ATP per glucose molecule under anaerobic conditions."
+},
+
+/* ==================================================
+   TOPIC 8: PYRUVATE DEHYDROGENASE COMPLEX
+================================================== */
+
+{
+topic:"Pyruvate dehydrogenase complex",
+q:"A patient with chronic alcohol misuse develops neurological symptoms and lactic acidosis due to thiamine deficiency. Which PDH cofactor is derived from vitamin B1?",
+o:["FAD","NAD+","Thiamine pyrophosphate","Coenzyme A"],
+a:2,
+e:"Thiamine pyrophosphate (TPP), derived from vitamin B1, is required by the E1 component of the pyruvate dehydrogenase complex."
+},
+
+{
+topic:"Pyruvate dehydrogenase complex",
+q:"A patient exposed to arsenic develops impaired oxidative decarboxylation of pyruvate. Which PDH cofactor is particularly affected?",
+o:["Lipoic acid","FAD","NAD+","Thiamine"],
+a:0,
+e:"Arsenite binds to the sulfhydryl groups of lipoic acid, inhibiting pyruvate dehydrogenase and alpha-ketoglutarate dehydrogenase."
+},
+
+{
+topic:"Pyruvate dehydrogenase complex",
+q:"An infant with a genetic pyruvate dehydrogenase deficiency develops neurological abnormalities and lactic acidosis. Which metabolite is expected to accumulate?",
+o:["Acetyl-CoA","Pyruvate","Citrate","Oxaloacetate"],
+a:1,
+e:"PDH deficiency prevents efficient conversion of pyruvate to acetyl-CoA. Pyruvate accumulates and is diverted towards lactate and alanine production."
+},
+
+{
+topic:"Pyruvate dehydrogenase complex",
+q:"A patient has increased ATP production and a high mitochondrial NADH/NAD+ ratio. What is the expected effect on pyruvate dehydrogenase activity?",
+o:["Activation","Inhibition","No regulation","Irreversible stimulation"],
+a:1,
+e:"High ATP and NADH indicate sufficient energy and inhibit PDH. PDH kinase phosphorylates and inactivates the complex. Pyruvate, ADP and calcium favour activation."
+},
+
+{
+topic:"Pyruvate dehydrogenase complex",
+q:"A laboratory investigates the products of the pyruvate dehydrogenase reaction. Which set is produced when pyruvate is converted to acetyl-CoA?",
+o:["Acetyl-CoA, NADH and CO2","Lactate, ATP and oxygen","Glucose, NADPH and CO2","Oxaloacetate, FADH2 and water"],
+a:0,
+e:"PDH catalyses oxidative decarboxylation of pyruvate to acetyl-CoA, producing NADH and carbon dioxide."
+},
+
+/* ==================================================
+   TOPIC 9: TCA CYCLE
+================================================== */
+
+{
+topic:"TCA cycle",
+q:"A patient has impaired mitochondrial energy production. Most TCA cycle reactions occur in which cellular compartment?",
+o:["Cytosol","Mitochondrial matrix","Nucleus","Lysosome"],
+a:1,
+e:"Most TCA cycle enzymes are located in the mitochondrial matrix. Succinate dehydrogenase is the exception and is embedded in the inner mitochondrial membrane."
+},
+
+{
+topic:"TCA cycle",
+q:"A patient has reduced activity of succinate dehydrogenase. Which electron transport chain complex will also be affected?",
+o:["Complex I","Complex II","Complex III","Complex IV"],
+a:1,
+e:"Succinate dehydrogenase catalyses conversion of succinate to fumarate in the TCA cycle and also functions as Complex II of the electron transport chain."
+},
+
+{
+topic:"TCA cycle",
+q:"A laboratory measures energy production from one molecule of acetyl-CoA entering the TCA cycle. Using modern ATP equivalents, which yield is closest?",
+o:["2 ATP","5 ATP","10 ATP","15 ATP"],
+a:2,
+e:"One acetyl-CoA produces 3 NADH (about 7.5 ATP), 1 FADH2 (about 1.5 ATP) and 1 GTP (1 ATP), giving approximately 10 ATP."
+},
+
+{
+topic:"TCA cycle",
+q:"A patient has impaired isocitrate dehydrogenase activity. Which products are normally generated when isocitrate is converted to alpha-ketoglutarate?",
+o:["NADH and CO2","FADH2 and water","ATP and oxygen","Lactate and NADPH"],
+a:0,
+e:"Isocitrate dehydrogenase catalyses oxidative decarboxylation of isocitrate, producing alpha-ketoglutarate, NADH and CO2."
+},
+
+{
+topic:"TCA cycle",
+q:"A patient with severe vitamin deficiency has reduced activity of alpha-ketoglutarate dehydrogenase. Which cofactor is required by this enzyme complex?",
+o:["Thiamine pyrophosphate","Biotin only","Vitamin K","Ascorbic acid"],
+a:0,
+e:"Alpha-ketoglutarate dehydrogenase requires the same five major cofactors as PDH: TPP, lipoic acid, CoA, FAD and NAD+."
+},
+
+/* ==================================================
+   TOPIC 10: OXIDATIVE PHOSPHORYLATION AND ETC
+================================================== */
+
+{
+topic:"Oxidative phosphorylation and ETC",
+q:"A patient with cyanide poisoning develops severe cellular hypoxia despite adequate oxygen delivery. Which ETC complex is inhibited?",
+o:["Complex I","Complex II","Complex III","Complex IV"],
+a:3,
+e:"Cyanide inhibits cytochrome c oxidase (Complex IV), preventing the transfer of electrons to oxygen, the final electron acceptor."
+},
+
+{
+topic:"Oxidative phosphorylation and ETC",
+q:"A patient is exposed to rotenone. Electron transfer from NADH to coenzyme Q is blocked. Which complex is affected?",
+o:["Complex I","Complex II","Complex III","Complex IV"],
+a:0,
+e:"Rotenone inhibits Complex I (NADH dehydrogenase), preventing electron transfer from NADH to coenzyme Q."
+},
+
+{
+topic:"Oxidative phosphorylation and ETC",
+q:"A laboratory experiment uses antimycin A to inhibit mitochondrial respiration. Which complex is directly affected?",
+o:["Complex I","Complex II","Complex III","Complex V"],
+a:2,
+e:"Antimycin A inhibits Complex III, also called the cytochrome bc1 complex, blocking electron transfer to cytochrome c."
+},
+
+{
+topic:"Oxidative phosphorylation and ETC",
+q:"A laboratory adds oligomycin to isolated mitochondria. Which process is directly inhibited?",
+o:["ATP synthase proton channel","Complex I electron transfer","Complex IV oxygen binding","Pyruvate oxidation"],
+a:0,
+e:"Oligomycin blocks the F0 proton channel of ATP synthase (Complex V), preventing proton re-entry and ATP production."
+},
+
+{
+topic:"Oxidative phosphorylation and ETC",
+q:"A newborn generates heat through brown adipose tissue without significant shivering. Which protein mediates this process?",
+o:["Cytochrome c","Thermogenin (UCP1)","ATP synthase","Hexokinase"],
+a:1,
+e:"Thermogenin, also known as uncoupling protein 1, permits proton leakage across the inner mitochondrial membrane. The energy of the proton gradient is released as heat rather than used for ATP synthesis."
+},
+
+/* ==================================================
+   TOPIC 11: GLYCOGEN SYNTHESIS AND BREAKDOWN
+================================================== */
+
+{
+topic:"Glycogen synthesis and breakdown",
+q:"A patient has recently consumed a carbohydrate-rich meal. Insulin levels are elevated. Which enzyme is stimulated to promote glycogen synthesis?",
+o:["Glycogen phosphorylase","Glycogen synthase","Glucose-6-phosphatase","Debranching enzyme"],
+a:1,
+e:"Insulin promotes dephosphorylation and activation of glycogen synthase. This enzyme adds glucose residues from UDP-glucose to growing glycogen chains."
+},
+
+{
+topic:"Glycogen synthesis and breakdown",
+q:"A fasting individual requires hepatic glycogen breakdown to maintain blood glucose. Which enzyme catalyses the release of glucose-1-phosphate from glycogen?",
+o:["Glycogen synthase","Glycogen phosphorylase","Hexokinase","Glucokinase"],
+a:1,
+e:"Glycogen phosphorylase cleaves alpha-1,4 glycosidic bonds by phosphorolysis, releasing glucose-1-phosphate from glycogen."
+},
+
+{
+topic:"Glycogen synthesis and breakdown",
+q:"A patient has a defect in the enzyme responsible for creating alpha-1,6 branch points during glycogen synthesis. Which enzyme is deficient?",
+o:["Branching enzyme","Glycogen phosphorylase","Debranching enzyme","Glucose-6-phosphatase"],
+a:0,
+e:"The branching enzyme creates alpha-1,6 linkages in glycogen. Branching increases glycogen solubility and creates multiple non-reducing ends for rapid synthesis and breakdown."
+},
+
+{
+topic:"Glycogen synthesis and breakdown",
+q:"A patient has difficulty completely degrading glycogen because short branched chains remain after glycogen phosphorylase acts. Which enzyme removes the branch points?",
+o:["Glycogen synthase","Debranching enzyme","Glucokinase","Phosphoglucomutase"],
+a:1,
+e:"The glycogen debranching enzyme has transferase and alpha-1,6-glucosidase activities. It transfers glucose residues and hydrolyses the remaining branch-point glucose."
+},
+
+{
+topic:"Glycogen synthesis and breakdown",
+q:"A fasting patient has increased glucagon secretion. What is the effect of glucagon on hepatic glycogen metabolism?",
+o:["Stimulates glycogen synthase","Stimulates glycogen breakdown","Inhibits glycogen phosphorylase","Increases glycogen storage"],
+a:1,
+e:"Glucagon activates the cAMP-protein kinase A pathway in the liver. This activates glycogen phosphorylase through a phosphorylation cascade and inhibits glycogen synthase."
+},
+
+/* ==================================================
+   TOPIC 12: GLYCOGEN STORAGE DISEASES
+================================================== */
+
+{
+topic:"Glycogen storage diseases",
+q:"A 6-month-old infant presents with severe fasting hypoglycaemia, hepatomegaly, lactic acidosis and hyperuricaemia. Which enzyme deficiency is most likely?",
+o:["Muscle glycogen phosphorylase","Glucose-6-phosphatase","Lysosomal acid alpha-glucosidase","Debranching enzyme"],
+a:1,
+e:"Von Gierke disease (GSD I) results from glucose-6-phosphatase deficiency. The liver cannot release free glucose from glucose-6-phosphate, producing severe fasting hypoglycaemia, hepatomegaly and lactic acidosis."
+},
+
+{
+topic:"Glycogen storage diseases",
+q:"A child develops cardiomegaly, hypotonia and muscle weakness during infancy. Biopsy shows glycogen accumulation within lysosomes. Which enzyme is deficient?",
+o:["Glucose-6-phosphatase","Acid alpha-glucosidase","Muscle phosphorylase","Branching enzyme"],
+a:1,
+e:"Pompe disease (GSD II) results from lysosomal acid alpha-glucosidase deficiency. Glycogen accumulates in lysosomes, particularly in cardiac and skeletal muscle."
+},
+
+{
+topic:"Glycogen storage diseases",
+q:"A young patient develops exercise intolerance and muscle cramps. There is little or no rise in blood lactate during exercise. Which enzyme is deficient?",
+o:["Liver glycogen phosphorylase","Muscle glycogen phosphorylase","Glucose-6-phosphatase","Debranching enzyme"],
+a:1,
+e:"McArdle disease (GSD V) results from muscle glycogen phosphorylase deficiency. Muscle cannot efficiently mobilise its glycogen during exercise, so lactate production is reduced."
+},
+
+{
+topic:"Glycogen storage diseases",
+q:"A child has hepatomegaly, fasting hypoglycaemia and accumulation of abnormal limit dextrin-like glycogen. Which enzyme deficiency is most likely?",
+o:["Debranching enzyme","Branching enzyme","Lysosomal alpha-glucosidase","Muscle phosphorylase"],
+a:0,
+e:"Cori disease (GSD III) is caused by debranching enzyme deficiency. Incomplete glycogen breakdown produces limit dextrin accumulation, hepatomegaly and variable hypoglycaemia."
+},
+
+{
+topic:"Glycogen storage diseases",
+q:"A patient presents with hepatosplenomegaly and abnormal glycogen with fewer branches than normal. Which enzyme is deficient?",
+o:["Branching enzyme","Debranching enzyme","Glycogen synthase","Glucokinase"],
+a:0,
+e:"Andersen disease (GSD IV) results from branching enzyme deficiency. Abnormal, poorly branched glycogen accumulates and may cause progressive liver damage and cirrhosis."
+},
+
+/* ==================================================
+   TOPIC 13: HEXOSE MONOPHOSPHATE SHUNT
+================================================== */
+
+{
+topic:"Hexose monophosphate shunt",
+q:"A patient with G6PD deficiency develops haemolysis after taking an oxidant medication. Which important product of the pentose phosphate pathway is reduced?",
+o:["ATP","NADPH","FADH2","Acetyl-CoA"],
+a:1,
+e:"Glucose-6-phosphate dehydrogenase catalyses the first oxidative step of the pentose phosphate pathway, generating NADPH. NADPH protects erythrocytes against oxidative damage."
+},
+
+{
+topic:"Hexose monophosphate shunt",
+q:"A patient with G6PD deficiency develops Heinz bodies following oxidative stress. Which protective molecule cannot be adequately maintained in its reduced form?",
+o:["Glutathione","Lactate","Pyruvate","Glycogen"],
+a:0,
+e:"NADPH is required by glutathione reductase to regenerate reduced glutathione (GSH). Reduced glutathione helps neutralise hydrogen peroxide and other oxidants."
+},
+
+{
+topic:"Hexose monophosphate shunt",
+q:"A rapidly dividing cell requires ribose-5-phosphate for DNA and RNA synthesis. Which metabolic pathway provides this compound?",
+o:["Glycolysis","Pentose phosphate pathway","TCA cycle","Glycogenolysis"],
+a:1,
+e:"The pentose phosphate pathway generates ribose-5-phosphate, which is required for nucleotide synthesis and therefore DNA and RNA production."
+},
+
+{
+topic:"Hexose monophosphate shunt",
+q:"A patient with thiamine deficiency has reduced activity of transketolase in erythrocytes. Which pathway contains this enzyme?",
+o:["TCA cycle","Pentose phosphate pathway","Glycolysis","Gluconeogenesis"],
+a:1,
+e:"Transketolase is a non-oxidative pentose phosphate pathway enzyme. It requires thiamine pyrophosphate as a cofactor."
+},
+
+{
+topic:"Hexose monophosphate shunt",
+q:"A patient has increased NADPH requirements for fatty acid synthesis. Which phase of the pentose phosphate pathway generates NADPH?",
+o:["Oxidative phase","Non-oxidative phase","Both phases equally","Neither phase"],
+a:0,
+e:"The oxidative phase generates NADPH through glucose-6-phosphate dehydrogenase and 6-phosphogluconate dehydrogenase reactions. The non-oxidative phase mainly rearranges sugar phosphates."
+},
+
+/* ==================================================
+   TOPIC 14: GLUCONEOGENESIS, CORI AND CAHILL CYCLES
+================================================== */
+
+{
+topic:"Gluconeogenesis, Cori cycle and Cahill cycle",
+q:"A patient has undergone prolonged fasting. Liver glycogen stores are depleted, but blood glucose is maintained. Which pathway is responsible for producing glucose from non-carbohydrate precursors?",
+o:["Glycolysis","Glycogenesis","Gluconeogenesis","Pentose phosphate pathway"],
+a:2,
+e:"Gluconeogenesis produces glucose from lactate, glycerol and glucogenic amino acids. It occurs mainly in the liver and, during prolonged fasting, also in the kidneys."
+},
+
+{
+topic:"Gluconeogenesis, Cori cycle and Cahill cycle",
+q:"A marathon runner produces lactate in skeletal muscle. The lactate travels to the liver and is converted to glucose, which can return to muscle. What is this cycle called?",
+o:["Cahill cycle","Cori cycle","Urea cycle","TCA cycle"],
+a:1,
+e:"The Cori cycle transfers lactate from anaerobic tissues to the liver. The liver converts lactate to glucose by gluconeogenesis, and glucose can return to muscle."
+},
+
+{
+topic:"Gluconeogenesis, Cori cycle and Cahill cycle",
+q:"During prolonged exercise, amino groups are transferred from muscle to pyruvate to form alanine. Alanine travels to the liver. Which cycle describes this process?",
+o:["Cori cycle","Cahill cycle","Pentose phosphate pathway","Glycogen cycle"],
+a:1,
+e:"The Cahill or glucose-alanine cycle transports nitrogen from muscle to liver as alanine. The liver converts alanine to pyruvate for gluconeogenesis and disposes of the amino nitrogen through urea formation."
+},
+
+{
+topic:"Gluconeogenesis, Cori cycle and Cahill cycle",
+q:"A patient has impaired conversion of pyruvate to oxaloacetate during gluconeogenesis. Which enzyme catalyses this reaction?",
+o:["Pyruvate carboxylase","Pyruvate kinase","Phosphofructokinase-1","Lactate dehydrogenase"],
+a:0,
+e:"Pyruvate carboxylase is a mitochondrial, biotin-dependent enzyme that converts pyruvate to oxaloacetate. It requires ATP and is activated by acetyl-CoA."
+},
+
+{
+topic:"Gluconeogenesis, Cori cycle and Cahill cycle",
+q:"A patient has a deficiency of hepatic glucose-6-phosphatase. Which final step of gluconeogenesis is impaired?",
+o:["Pyruvate to oxaloacetate","Oxaloacetate to phosphoenolpyruvate","Fructose-1,6-bisphosphate to fructose-6-phosphate","Glucose-6-phosphate to free glucose"],
+a:3,
+e:"Glucose-6-phosphatase hydrolyses glucose-6-phosphate to free glucose. It is present in liver and kidney but absent in skeletal muscle, allowing the liver to release glucose into blood."
+},
+
+/* ==================================================
+   TOPIC 15: ALCOHOL METABOLISM AND HYPOGLYCAEMIA
+================================================== */
+
+{
+topic:"Alcohol metabolism and hypoglycaemia",
+q:"A fasting patient with chronic alcohol misuse develops severe hypoglycaemia. Which biochemical change is mainly responsible?",
+o:["Decreased hepatic NADH/NAD+ ratio","Increased hepatic NADH/NAD+ ratio","Increased hepatic glycogen synthesis","Increased gluconeogenesis"],
+a:1,
+e:"Alcohol dehydrogenase and aldehyde dehydrogenase generate NADH during ethanol metabolism. The increased NADH/NAD+ ratio inhibits gluconeogenesis, particularly in a fasting patient."
+},
+
+{
+topic:"Alcohol metabolism and hypoglycaemia",
+q:"A patient with alcohol intoxication develops elevated blood lactate. Which metabolic reaction is favoured by the increased NADH produced during ethanol metabolism?",
+o:["Lactate to pyruvate","Pyruvate to lactate","Glucose to glycogen","Acetyl-CoA to pyruvate"],
+a:1,
+e:"High NADH favours the lactate dehydrogenase reaction towards lactate formation. This decreases pyruvate availability for gluconeogenesis and contributes to lactic acidosis."
+},
+
+{
+topic:"Alcohol metabolism and hypoglycaemia",
+q:"A patient who has been fasting for 24 hours consumes a large amount of alcohol. Why is this patient particularly vulnerable to hypoglycaemia?",
+o:["Hepatic glycogen stores are depleted and gluconeogenesis is inhibited","Alcohol directly increases glycogen storage","Alcohol stimulates glucose absorption","Glycolysis stops completely"],
+a:0,
+e:"During prolonged fasting, hepatic glycogen becomes depleted and the body depends on gluconeogenesis. Ethanol metabolism raises NADH and inhibits this pathway, increasing the risk of hypoglycaemia."
+},
+
+{
+topic:"Alcohol metabolism and hypoglycaemia",
+q:"A patient with alcohol-related hypoglycaemia has a high hepatic NADH/NAD+ ratio. Which conversion is favoured by this redox state?",
+o:["Malate to oxaloacetate","Oxaloacetate to malate","Lactate to pyruvate","Glycerol to glucose directly"],
+a:1,
+e:"High NADH favours reduction of oxaloacetate to malate by malate dehydrogenase. This removes oxaloacetate from the gluconeogenic pathway and reduces glucose production."
+},
+
+{
+topic:"Alcohol metabolism and hypoglycaemia",
+q:"A patient consumes alcohol while fasting and develops hypoglycaemia and lactic acidosis. Which pair of enzymes generates the excess NADH during ethanol metabolism?",
+o:["Hexokinase and pyruvate kinase","Alcohol dehydrogenase and aldehyde dehydrogenase","Lactase and sucrase","Glycogen synthase and glycogen phosphorylase"],
+a:1,
+e:"Alcohol dehydrogenase converts ethanol to acetaldehyde, generating NADH. Aldehyde dehydrogenase converts acetaldehyde to acetate, generating additional NADH."
+}
+
+];
+
+/* ==================================================
+   QUIZ ENGINE
+================================================== */
+
+const TOTAL = questions.length;
+let current = 0;
+let answers = Array(TOTAL).fill(null);
+let submitted = false;
+
+const $ = id => document.getElementById(id);
+
+function initialise() {
+  if (TOTAL !== 75) {
+    alert("Question bank error: expected 75 questions, found " + TOTAL);
+  }
+
+  $("navGrid").innerHTML = "";
+
+  questions.forEach((q,i) => {
+    const b = document.createElement("button");
+    b.className = "nav";
+    b.textContent = i + 1;
+    b.addEventListener("click", () => {
+      if (submitted) return;
+      current = i;
+      render();
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+    $("navGrid").appendChild(b);
+  });
+
+  render();
+}
+
+function render() {
+  const q = questions[current];
+
+  $("progressText").textContent =
+    `Question ${current+1} of ${TOTAL}`;
+
+  $("percentText").textContent =
+    `${Math.round((current+1)/TOTAL*100)}%`;
+
+  $("progressFill").style.width =
+    `${(current+1)/TOTAL*100}%`;
+
+  $("topic").textContent = q.topic.toUpperCase();
+
+  $("question").textContent = q.q;
+
+  $("options").innerHTML = "";
+
+  q.o.forEach((opt,j) => {
+    const div = document.createElement("div");
+    div.className = "option";
+
+    if (answers[current] === j) {
+      div.classList.add("selected");
+    }
+
+    const letter = document.createElement("span");
+    letter.className = "letter";
+    letter.textContent = "ABCD"[j] + ".";
+
+    const text = document.createElement("span");
+    text.className = "optiontext";
+    text.textContent = opt;
+
+    div.append(letter,text);
+
+    div.addEventListener("click", () => {
+      if (submitted) return;
+      answers[current] = j;
+      render();
+    });
+
+    $("options").appendChild(div);
+  });
+
+  [...$("navGrid").children].forEach((b,i) => {
+    b.classList.toggle("answered", answers[i] !== null);
+    b.classList.toggle("current", i === current);
+  });
+
+  $("prev").disabled = current === 0;
+  $("next").disabled = current === TOTAL-1;
+
+  $("answeredCount").textContent =
+    `${answers.filter(a=>a!==null).length} of ${TOTAL} questions answered`;
+}
+
+$("prev").onclick = () => {
+  if(current > 0) {
+    current--;
+    render();
+  }
+};
+
+$("next").onclick = () => {
+  if(current < TOTAL-1) {
+    current++;
+    render();
+  }
+};
+
+function performanceRemark(p) {
+  if(p >= 80)
+    return "Excellent performance. Strong mastery of the topic. Review the few missed concepts and continue with application-based practice.";
+
+  if(p >= 70)
+    return "Very good performance. Your understanding is solid, but revise the areas responsible for your missed questions.";
+
+  if(p >= 60)
+    return "Good performance, but there are some knowledge gaps. Revisit the important mechanisms and relationships before moving on.";
+
+  if(p >= 50)
+    return "Borderline performance. The basic foundation is present, but you need another focused revision and more active recall.";
+
+  return "Needs significant revision. Re-study the core concepts, practise active recall, and retake the quiz before progressing.";
+}
+
+/* ==================================================
+   SUBMISSION
+================================================== */
+
+$("submit").onclick = () => {
+  const unanswered = answers.filter(a=>a===null).length;
+
+  if(unanswered > 0) {
+    if(!confirm(`${unanswered} questions are unanswered. Submit anyway?`)) {
+      return;
+    }
+  }
+
+  submitQuiz();
+};
+
+function submitQuiz() {
+  if(submitted) return;
+  submitted = true;
+
+  let correct=0,wrong=0,unanswered=0;
+
+  questions.forEach((q,i) => {
+    if(answers[i] === null) unanswered++;
+    else if(answers[i] === q.a) correct++;
+    else wrong++;
+  });
+
+  const percentage = Math.round(correct/TOTAL*100);
+
+  $("navigationCard").classList.add("hidden");
+  $("quizCard").classList.add("hidden");
+
+  $("results").classList.remove("hidden");
+
+  $("results").innerHTML = `
+    <h2>YOUR EXAMINATION RESULTS</h2>
+
+    <div class="metrics">
+      <div class="metric">
+        <strong>${correct}/${TOTAL}</strong>
+        <span>TOTAL SCORE</span>
+      </div>
+
+      <div class="metric">
+        <strong>${percentage}%</strong>
+        <span>PERCENTAGE</span>
+      </div>
+
+      <div class="metric">
+        <strong>${correct}</strong>
+        <span>CORRECT</span>
+      </div>
+
+      <div class="metric">
+        <strong>${wrong}</strong>
+        <span>INCORRECT</span>
+      </div>
+
+      <div class="metric">
+        <strong>${unanswered}</strong>
+        <span>UNANSWERED</span>
+      </div>
+    </div>
+
+    <div class="remark">
+      <b>PERFORMANCE REMARK</b>
+      <p>${performanceRemark(percentage)}</p>
+    </div>
+
+    <button class="action retake" onclick="restartQuiz()">
+      RETAKE QUIZ
+    </button>
+  `;
+
+  showCorrections();
+  window.scrollTo(0,0);
+}
+
+/* ==================================================
+   FULL CORRECTIONS
+================================================== */
+
+function showCorrections() {
+  $("corrections").classList.remove("hidden");
+  $("correctionList").innerHTML = "";
+
+  questions.forEach((q,i) => {
+    const chosen = answers[i];
+    const isCorrect = chosen === q.a;
+
+    const status = chosen === null
+      ? "⚪ UNANSWERED"
+      : isCorrect
+        ? "🟢 CORRECT"
+        : "🔴 INCORRECT";
+
+    const box = document.createElement("div");
+    box.className = "correction";
+
+    const heading = document.createElement("h3");
+    heading.textContent = `QUESTION ${i+1}`;
+
+    const topic = document.createElement("p");
+    topic.className = "small";
+    topic.textContent = q.topic;
+
+    const question = document.createElement("p");
+    question.textContent = q.q;
+
+    const result = document.createElement("p");
+    result.className = "status " +
+      (chosen === null ? "na" : isCorrect ? "good" : "bad");
+    result.textContent = status;
+
+    const yourAnswer = document.createElement("p");
+    yourAnswer.textContent = "Your answer: " +
+      (chosen === null
+        ? "No answer selected"
+        : "ABCD"[chosen] + ". " + q.o[chosen]);
+
+    const correctAnswer = document.createElement("p");
+    correctAnswer.textContent =
+      "Correct answer: " + "ABCD"[q.a] + ". " + q.o[q.a];
+
+    box.append(heading,topic,question,result,yourAnswer,correctAnswer);
+
+    q.o.forEach((opt,j) => {
+      const row = document.createElement("div");
+      row.className = "option";
+
+      if(j === q.a) {
+        row.classList.add("correct");
+      } else if(j === chosen) {
+        row.classList.add("wrong");
+      }
+
+      const letter = document.createElement("span");
+      letter.className = "letter";
+      letter.textContent = "ABCD"[j] + ".";
+
+      const text = document.createElement("span");
+      text.className = "optiontext";
+      text.textContent = opt;
+
+      const tag = document.createElement("span");
+      tag.className = "tag";
+
+      if(j === q.a) {
+        tag.textContent = "✓ CORRECT ANSWER";
+      } else if(j === chosen) {
+        tag.textContent = "✗ YOUR ANSWER";
+      }
+
+      row.append(letter,text,tag);
+      box.appendChild(row);
+    });
+
+    const explanation = document.createElement("p");
+    explanation.className = "explanation";
+    explanation.innerHTML = "<b>EXPLANATION:</b> ";
+
+    const explanationText = document.createElement("span");
+    explanationText.textContent = q.e;
+
+    explanation.appendChild(explanationText);
+    box.appendChild(explanation);
+
+    $("correctionList").appendChild(box);
+  });
+}
+
+/* ==================================================
+   RETAKE
+================================================== */
+
+function restartQuiz() {
+  current = 0;
+  answers = Array(TOTAL).fill(null);
+  submitted = false;
+
+  $("navigationCard").classList.remove("hidden");
+  $("quizCard").classList.remove("hidden");
+  $("results").classList.add("hidden");
+  $("corrections").classList.add("hidden");
+
+  render();
+  window.scrollTo(0,0);
+}
+
+initialise();
+
+</script>
+</body>
+</html>
